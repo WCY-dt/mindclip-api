@@ -6,5 +6,14 @@ export async function handleCollectionRequest(knex: Knex, request: Request) {
 
     const query = knex('Linkcard').select('Col').distinct();
     const results = await query;
-    return Response.json(results.map((c) => c.Col));
+    const response = new Response(JSON.stringify(results), {
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*',
+            'X-Content-Type-Options': 'nosniff',
+        },
+    });
+    return response;
 }

@@ -10,5 +10,14 @@ export async function handleCategoryRequest(knex: Knex, request: Request) {
         query.whereLike('Col', `%${collection}%`);
     }
     const results = await query;
-    return Response.json(results.map((c) => c.Category));
+    const response = new Response(JSON.stringify(results), {
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*',
+            'X-Content-Type-Options': 'nosniff',
+        },
+    });
+    return response;
 }

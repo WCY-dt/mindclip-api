@@ -28,7 +28,6 @@ export async function handleLinkcardRequest(knex: Knex, request: Request) {
 
     const resultsWithLinks = await Promise.all(results.map(async (result) => {
         const links = await knex('Links').select('*').where('LinkcardId', result.Id);
-        // 去掉Id和LinkcardId
         links.forEach((link) => {
             delete link.Id;
             delete link.LinkcardId;
@@ -40,5 +39,15 @@ export async function handleLinkcardRequest(knex: Knex, request: Request) {
         delete result.Id;
     });
 
-    return Response.json(resultsWithLinks);
+    const response = new Response(JSON.stringify(resultsWithLinks), {
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*',
+            'X-Content-Type-Options': 'nosniff',
+        },
+    });
+
+    return response;
 }
