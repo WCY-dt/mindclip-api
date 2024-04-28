@@ -1,17 +1,21 @@
 {
-  "name": "mindclip-serverless",
-  "version": "0.0.0",
+  "name": "mindclip-api",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
+    "init": "node ./assets/scripts/initDatabase.js",
     "deploy": "wrangler deploy",
+    "update-deploy": "npx wrangler d1 execute mindclip-db-alldata --remote --file=./assets/sql/schema.sql && wrangler deploy",
     "dev": "wrangler dev",
-    "start": "wrangler dev",
+    "update-dev": "npx wrangler d1 execute mindclip-db-alldata --local --file=./assets/sql/schema.sql && wrangler dev",
     "test": "vitest",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.1.0",
     "@cloudflare/workers-types": "^4.20240423.0",
+    "knex": "^3.1.0",
+    "knex-cloudflare-d1": "^0.1.1",
     "typescript": "^5.0.4",
     "vitest": "1.3.0",
     "wrangler": "^3.0.0"
