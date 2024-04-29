@@ -6,7 +6,8 @@ export async function handleCollectionRequest(knex: Knex, request: Request) {
 
     const query = knex('Cards').select('Collection').distinct();
     const results = await query;
-    const response = new Response(JSON.stringify(results), {
+    const collections = results.map(result => result.Collection);
+    const response = new Response(JSON.stringify(collections), {
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
