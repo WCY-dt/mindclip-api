@@ -1,6 +1,6 @@
 import Knex from 'knex';
 import ClientD1 from 'knex-cloudflare-d1';
-import { handleLinkcardRequest } from './routes/linkcardHandler';
+import { handleCardRequest } from './routes/cardHandler';
 import { handleTitleRequest } from './routes/titleHandler';
 import { handleCollectionRequest } from './routes/collectionHandler';
 import { handleCategoryRequest } from './routes/categoryHandler';
@@ -24,8 +24,8 @@ export default {
 
         let response;
         switch (pathname) {
-            case "/linkcard":
-                response = await handleLinkcardRequest(knex, request);
+            case "/card":
+                response = await handleCardRequest(knex, request);
                 break;
             case "/title":
                 response = await handleTitleRequest(knex, request);

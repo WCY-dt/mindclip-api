@@ -4,7 +4,7 @@ export async function handleCollectionRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
     const { searchParams } = url;
 
-    const query = knex('Linkcard').select('Col').distinct();
+    const query = knex('Cards').select('Collection').distinct();
     const results = await query;
     const response = new Response(JSON.stringify(results), {
         headers: {

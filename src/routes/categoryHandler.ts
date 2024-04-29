@@ -5,9 +5,9 @@ export async function handleCategoryRequest(knex: Knex, request: Request) {
     const { searchParams } = url;
     const collection = searchParams.get('collection');
 
-    const query = knex('Linkcard').select('Category').distinct();
+    const query = knex('Cards').select('Category').distinct();
     if (collection) {
-        query.whereLike('Col', `%${collection}%`);
+        query.whereLike('Collection', `%${collection}%`);
     }
     const results = await query;
     const response = new Response(JSON.stringify(results), {

@@ -5,9 +5,9 @@ export async function handleTitleRequest(knex: Knex, request: Request) {
     const { searchParams } = url;
     const collection = searchParams.get('collection');
 
-    const query = knex('Linkcard').select('Title', 'Urlpath');
+    const query = knex('Cards').select('Title', 'Url');
     if (collection) {
-        query.whereLike('Col', `%${collection}%`);
+        query.whereLike('Collection', `%${collection}%`);
     }
     const results = await query;
     const response = new Response(JSON.stringify(results), {
