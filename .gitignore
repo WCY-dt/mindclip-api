@@ -174,3 +174,7 @@ dist
 # sql generated files
 
 assets/sql/
+
+# secrets
+
+.dev.vars
