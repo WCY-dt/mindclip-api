@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import createResponse from '../utils/createResponse';
 
 export async function handleCategoryRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
@@ -11,14 +12,5 @@ export async function handleCategoryRequest(knex: Knex, request: Request) {
     }
     const results = await query;
     const categories = results.map(result => result.Category);
-    const response = new Response(JSON.stringify(categories), {
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': '*',
-            'Access-Control-Allow-Headers': '*',
-            'X-Content-Type-Options': 'nosniff',
-        },
-    });
-    return response;
+    return createResponse(categories, 200);
 }

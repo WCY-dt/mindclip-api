@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import createResponse from '../utils/createResponse';
 
 export async function handleCollectionRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
@@ -7,14 +8,5 @@ export async function handleCollectionRequest(knex: Knex, request: Request) {
     const query = knex('Cards').select('Collection').distinct();
     const results = await query;
     const collections = results.map(result => result.Collection);
-    const response = new Response(JSON.stringify(collections), {
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': '*',
-            'Access-Control-Allow-Headers': '*',
-            'X-Content-Type-Options': 'nosniff',
-        },
-    });
-    return response;
+    return createResponse(collections, 200);
 }

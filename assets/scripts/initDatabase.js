@@ -4,6 +4,18 @@ const data = fs.readFileSync('./assets/data/data.json', 'utf8');
 
 const jsonData = JSON.parse(data);
 
+cardIds = [];
+linkIds = [];
+
+function generateRandomId(idsArray) {
+    let id;
+    do {
+        id = Math.floor(Math.random() * 10000);
+    } while (idsArray.includes(id));
+    idsArray.push(id);
+    return id;
+}
+
 let sql = `
 
 DROP TABLE IF EXISTS [Cards];
@@ -17,10 +29,10 @@ VALUES
 `;
 
 const generateCards = (data) => {
-    let id = 0;
     return Object.entries(data).map(([collection, items]) => {
         return items.map(item => {
-            return `\t(${id++}, "${collection}", "${item.category}", "${item.title}", "${item.url}", "${item.description}", "${item.detail}")`;
+            id = generateRandomId(cardIds);
+            return `\t(${id}, "${collection}", "${item.Category}", "${item.Title}", "${item.Url}", "${item.Description}", "${item.Detail}")`;
         }).join(',\n');
     }).join(',\n');
 }
@@ -40,14 +52,15 @@ VALUES
 `;
 
 const generateLinks = (data) => {
-    let id = 0;
-    let cardId = -1;
+    let count = -1;
     return Object.entries(data).map(([_, items]) => {
         return items.map(item => {
-            cardId++;
+            count++;
             let links = item.links || [];
             return links.map(link => {
-                return `\t(${id++}, ${cardId}, '${link.title}', '${link.url}')`;
+                id = generateRandomId(linkIds);
+                cardId = cardIds[count];
+                return `\t(${id}, ${cardId}, '${link.Title}', '${link.Url}')`;
             }).filter(Boolean).join(',\n');
         }).filter(Boolean).join(',\n');
     }).filter(Boolean).join(',\n');

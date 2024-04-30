@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import createResponse from '../utils/createResponse';
 
 export async function handleTitleRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
@@ -10,14 +11,5 @@ export async function handleTitleRequest(knex: Knex, request: Request) {
         query.whereLike('Collection', `%${collection}%`);
     }
     const results = await query;
-    const response = new Response(JSON.stringify(results), {
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': '*',
-            'Access-Control-Allow-Headers': '*',
-            'X-Content-Type-Options': 'nosniff',
-        },
-    });
-    return response;
+    return createResponse(results, 200);
 }

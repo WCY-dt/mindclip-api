@@ -1,11 +1,20 @@
 import Knex from 'knex';
 import ClientD1 from 'knex-cloudflare-d1';
-import { handleTestloginRequest } from './routes/testloginHandler';
+
+import createResponse from './utils/createResponse';
+
 import { handleLoginRequest } from './services/loginHandler';
+
 import { handleCardRequest } from './routes/cardHandler';
 import { handleTitleRequest } from './routes/titleHandler';
 import { handleCollectionRequest } from './routes/collectionHandler';
 import { handleCategoryRequest } from './routes/categoryHandler';
+
+import { handleEditNewCardRequest } from './routes/editNewCardHandler';
+import { handleEditNewLinkRequest } from './routes/editNewLinkHandler';
+import { handleEditModifyRequest } from './routes/editModifyHandler';
+import { handleEditDeleteCardRequest } from './routes/editDeleteCardHandler';
+import { handleEditDeleteLinkRequest } from './routes/editDeleteLinkHandler';
 
 export default {
     async fetch(request, env, ctx): Promise<Response> {
@@ -19,44 +28,46 @@ export default {
 
         const url = new URL(request.url);
         const { pathname, searchParams } = url;
-
-        if (request.method === 'POST') {
-            let response;
-            switch (pathname) {
-                case "/login":
-                    response = await handleLoginRequest(knex, request, env);
-                    break;
-                case "/testlogin":
-                    response = await handleTestloginRequest(knex, request, env);
-                    break;
-                default:
-                    response = new Response("Invalid path.", { status: 404 });
+        
+        try {
+            if (request.method === 'POST') {
+                switch (pathname) {
+                    case "/login":
+                    case "/edit":
+                        return await handleLoginRequest(knex, request, env);
+                    case "/edit/new/card":
+                        return await handleEditNewCardRequest(knex, request, env);
+                    case "/edit/new/link":
+                        return await handleEditNewLinkRequest(knex, request, env);
+                    case "/edit/modify":
+                        return await handleEditModifyRequest(knex, request, env);
+                    case "/edit/delete/card":
+                        return await handleEditDeleteCardRequest(knex, request, env);
+                    case "/edit/delete/link":
+                        return await handleEditDeleteLinkRequest(knex, request, env);
+                    default:
+                        return createResponse("Invalid path.", 404);
+                }
+            } else if (request.method === 'GET') {
+                switch (pathname) {
+                    case "/card":
+                        return await handleCardRequest(knex, request);
+                    case "/title":
+                        return await handleTitleRequest(knex, request);
+                    case "/collection":
+                        return await handleCollectionRequest(knex, request);
+                    case "/category":
+                        return await handleCategoryRequest(knex, request);
+                    case "/":
+                        return createResponse("Welcome to MindClip!", 204);
+                    default:
+                        return createResponse("Invalid path.", 404);
+                }
+            } else {
+                return createResponse("Invalid method.", 405);
             }
-            return response;
-        } else if (request.method === 'GET') {
-            let response;
-            switch (pathname) {
-                case "/card":
-                    response = await handleCardRequest(knex, request);
-                    break;
-                case "/title":
-                    response = await handleTitleRequest(knex, request);
-                    break;
-                case "/collection":
-                    response = await handleCollectionRequest(knex, request);
-                    break;
-                case "/category":
-                    response = await handleCategoryRequest(knex, request);
-                    break;
-                case "/":
-                    response = new Response("Welcome to the MindClip API. Call /linkcard to get the data from the database.", { status: 404 });
-                    break;
-                default:
-                    response = new Response("Invalid path.", { status: 404 });
-            }
-            return response;
-        } else {
-            return new Response("Invalid request method. Only GET or POST is supported.", { status: 405 });
+        } catch (error) {
+            return createResponse("Internal server error.", 500);
         }
     },
 } satisfies ExportedHandler<Env>;
