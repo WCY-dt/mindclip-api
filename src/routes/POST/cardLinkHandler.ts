@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
-import { handleVerifyRequest } from '../services/verifyHandler';
-import createResponse from '../utils/createResponse';
-import generateUniqueID from '../utils/generateUniqueID';
+import { handleVerifyRequest } from '../../services/verifyHandler';
+import createResponse from '../../utils/createResponse';
+import generateUniqueID from '../../utils/generateUniqueID';
 
-export async function handleEditNewLinkRequest(knex: Knex, request: Request, env: Env) {
+export async function handlePostCardLinkRequest(knex: Knex, request: Request, env: Env) {
     if (!await handleVerifyRequest(request, env)) {
         return createResponse('Unauthorized', 401);
     }

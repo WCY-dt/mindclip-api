@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import createResponse from '../utils/createResponse';
+import createResponse from '../../utils/createResponse';
 
-export async function handleTitleRequest(knex: Knex, request: Request) {
+export async function handleGetCardTitleRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
     const { searchParams } = url;
     const collection = searchParams.get('collection');

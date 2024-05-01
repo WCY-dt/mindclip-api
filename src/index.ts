@@ -5,16 +5,20 @@ import createResponse from './utils/createResponse';
 
 import { handleLoginRequest } from './services/loginHandler';
 
-import { handleCardRequest } from './routes/cardHandler';
-import { handleTitleRequest } from './routes/titleHandler';
-import { handleCollectionRequest } from './routes/collectionHandler';
-import { handleCategoryRequest } from './routes/categoryHandler';
+import { handleGetCardRequest } from './routes/GET/cardHandler';
+import { handleGetCardTitleRequest } from './routes/GET/cardTitleHandler';
+import { handleGetCardCollectionRequest } from './routes/GET/cardCollectionHandler';
+import { handleGetCardCategoryRequest } from './routes/GET/cardCategoryHandler';
 
-import { handleEditNewCardRequest } from './routes/editNewCardHandler';
-import { handleEditNewLinkRequest } from './routes/editNewLinkHandler';
-import { handleEditModifyRequest } from './routes/editModifyHandler';
-import { handleEditDeleteCardRequest } from './routes/editDeleteCardHandler';
-import { handleEditDeleteLinkRequest } from './routes/editDeleteLinkHandler';
+import { handlePostCardRequest } from './routes/POST/cardHandler';
+import { handlePostCardLinkRequest } from './routes/POST/cardLinkHandler';
+
+import { handlePutCardRequest } from './routes/PUT/cardHandler';
+
+import { handleDeleteCardRequest } from './routes/DELETE/cardHandler';
+import { handleDeleteCardLinkRequest } from './routes/DELETE/cardLinkHandler';
+
+import { handleOptionsRequest } from './routes/OPTIONS/anyHandler';
 
 export default {
     async fetch(request, env, ctx): Promise<Response> {
@@ -30,6 +34,8 @@ export default {
         const { pathname, searchParams } = url;
 		const method = request.method;
 
+		console.log(`method: ${method} - Pathname: ${pathname}`);
+
         try {
 			if (pathname === '/') {
 				return createResponse("Welcome to MindClip!", 204);
@@ -37,17 +43,17 @@ export default {
 
 			switch (method) {
 				case 'OPTIONS':
-					return createResponse("Preflight request.", 204);
+					return await handleOptionsRequest(knex, request);
 				case 'GET':
 					switch (pathname) {
 						case "/card":
-							return await handleCardRequest(knex, request);
+							return await handleGetCardRequest(knex, request);
 						case "/card/title":
-							return await handleTitleRequest(knex, request);
+							return await handleGetCardTitleRequest(knex, request);
 						case "/card/collection":
-							return await handleCollectionRequest(knex, request);
+							return await handleGetCardCollectionRequest(knex, request);
 						case "/card/category":
-							return await handleCategoryRequest(knex, request);
+							return await handleGetCardCategoryRequest(knex, request);
 						default:
 							return createResponse("Invalid path.", 404);
 					}
@@ -56,25 +62,25 @@ export default {
 						case "/login":
 							return await handleLoginRequest(knex, request, env);
 						case "/card":
-							return await handleEditNewCardRequest(knex, request, env);
+							return await handlePostCardRequest(knex, request, env);
 						case "/card/link":
-							return await handleEditNewLinkRequest(knex, request, env);
+							return await handlePostCardLinkRequest(knex, request, env);
 						default:
 							return createResponse("Invalid path.", 404);
 					}
 				case 'PUT':
 					switch (pathname) {
 						case "/card":
-							return await handleEditModifyRequest(knex, request, env);
+							return await handlePutCardRequest(knex, request, env);
 						default:
 							return createResponse("Invalid path.", 404);
 					}
 				case 'DELETE':
 					switch (pathname) {
 						case "/card":
-							return await handleEditDeleteCardRequest(knex, request, env);
+							return await handleDeleteCardRequest(knex, request, env);
 						case "/card/link":
-							return await handleEditDeleteLinkRequest(knex, request, env);
+							return await handleDeleteCardLinkRequest(knex, request, env);
 						default:
 							return createResponse("Invalid path.", 404);
 					}

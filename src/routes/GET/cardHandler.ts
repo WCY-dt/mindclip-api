@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import createResponse from '../utils/createResponse';
+import createResponse from '../../utils/createResponse';
 
-export async function handleCardRequest(knex: Knex, request: Request) {
+export async function handleGetCardRequest(knex: Knex, request: Request) {
     const url = new URL(request.url);
     const { searchParams } = url;
     const collection = searchParams.get('collection');
@@ -29,7 +29,7 @@ export async function handleCardRequest(knex: Knex, request: Request) {
     const resultsWithLinks = await Promise.all(results.map(async (result) => {
         const links = await knex('Links').select('*').where('CardId', result.Id);
         if (showid !== null) {
-            return { ...result, links };            
+            return { ...result, links };
         } else {
             const cleanedLinks = links.map(({ Id, CardId, ...rest }) => rest);
             const { Id, ...cleanedResult } = result;

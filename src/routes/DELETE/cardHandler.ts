@@ -1,12 +1,12 @@
 import { Knex } from 'knex';
-import { handleVerifyRequest } from '../services/verifyHandler';
-import createResponse from '../utils/createResponse';
+import { handleVerifyRequest } from '../../services/verifyHandler';
+import createResponse from '../../utils/createResponse';
 
 type postDataProps = {
     Id: number
 }
 
-export async function handleEditDeleteCardRequest(knex: Knex, request: Request, env: Env) {
+export async function handleDeleteCardRequest(knex: Knex, request: Request, env: Env) {
     if (!await handleVerifyRequest(request, env)) {
         return createResponse('Unauthorized', 401);
     }

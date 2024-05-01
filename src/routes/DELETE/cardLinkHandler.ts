@@ -1,12 +1,12 @@
 import { Knex } from 'knex';
-import { handleVerifyRequest } from '../services/verifyHandler';
-import createResponse from '../utils/createResponse';
+import { handleVerifyRequest } from '../../services/verifyHandler';
+import createResponse from '../../utils/createResponse';
 
 type postDataProps = {
     Id: number
 }
 
-export async function handleEditDeleteLinkRequest(knex: Knex, request: Request, env: Env) {
+export async function handleDeleteCardLinkRequest(knex: Knex, request: Request, env: Env) {
     if (!await handleVerifyRequest(request, env)) {
         return createResponse('Unauthorized', 401);
     }
@@ -22,7 +22,7 @@ export async function handleEditDeleteLinkRequest(knex: Knex, request: Request, 
     if (!linkExists) {
         return createResponse("Invalid post data.", 409);
     }
-    
+
     await knex('Links')
         .where('Id', data.Id)
         .del();

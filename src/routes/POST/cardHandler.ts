@@ -1,13 +1,13 @@
 import { Knex } from 'knex';
-import { handleVerifyRequest } from '../services/verifyHandler';
-import createResponse from '../utils/createResponse';
-import generateUniqueID from '../utils/generateUniqueID';
+import { handleVerifyRequest } from '../../services/verifyHandler';
+import createResponse from '../../utils/createResponse';
+import generateUniqueID from '../../utils/generateUniqueID';
 
-export async function handleEditNewCardRequest(knex: Knex, request: Request, env: Env) {
+export async function handlePostCardRequest(knex: Knex, request: Request, env: Env) {
     if (!await handleVerifyRequest(request, env)) {
         return createResponse('Unauthorized', 401);
     }
-    
+
     let data: dataProps;
     try {
         data = await request.json();
@@ -41,9 +41,9 @@ export async function handleEditNewCardRequest(knex: Knex, request: Request, env
         });
     }));
 
-    let result = { 
-        Id: data.Id, 
-        links: data.links.map(link => (link.Id)) 
+    let result = {
+        Id: data.Id,
+        links: data.links.map(link => (link.Id))
     };
 
     return createResponse(result, 200);
