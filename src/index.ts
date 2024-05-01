@@ -28,44 +28,59 @@ export default {
 
         const url = new URL(request.url);
         const { pathname, searchParams } = url;
-        
+		const method = request.method;
+
         try {
-            if (request.method === 'POST') {
-                switch (pathname) {
-                    case "/login":
-                    case "/edit":
-                        return await handleLoginRequest(knex, request, env);
-                    case "/edit/new/card":
-                        return await handleEditNewCardRequest(knex, request, env);
-                    case "/edit/new/link":
-                        return await handleEditNewLinkRequest(knex, request, env);
-                    case "/edit/modify":
-                        return await handleEditModifyRequest(knex, request, env);
-                    case "/edit/delete/card":
-                        return await handleEditDeleteCardRequest(knex, request, env);
-                    case "/edit/delete/link":
-                        return await handleEditDeleteLinkRequest(knex, request, env);
-                    default:
-                        return createResponse("Invalid path.", 404);
-                }
-            } else if (request.method === 'GET') {
-                switch (pathname) {
-                    case "/card":
-                        return await handleCardRequest(knex, request);
-                    case "/title":
-                        return await handleTitleRequest(knex, request);
-                    case "/collection":
-                        return await handleCollectionRequest(knex, request);
-                    case "/category":
-                        return await handleCategoryRequest(knex, request);
-                    case "/":
-                        return createResponse("Welcome to MindClip!", 204);
-                    default:
-                        return createResponse("Invalid path.", 404);
-                }
-            } else {
-                return createResponse("Invalid method.", 405);
-            }
+			if (pathname === '/') {
+				return createResponse("Welcome to MindClip!", 204);
+			}
+
+			switch (method) {
+				case 'OPTIONS':
+					return createResponse("Preflight request.", 204);
+				case 'GET':
+					switch (pathname) {
+						case "/card":
+							return await handleCardRequest(knex, request);
+						case "/card/title":
+							return await handleTitleRequest(knex, request);
+						case "/card/collection":
+							return await handleCollectionRequest(knex, request);
+						case "/card/category":
+							return await handleCategoryRequest(knex, request);
+						default:
+							return createResponse("Invalid path.", 404);
+					}
+				case 'POST':
+					switch (pathname) {
+						case "/login":
+							return await handleLoginRequest(knex, request, env);
+						case "/card":
+							return await handleEditNewCardRequest(knex, request, env);
+						case "/card/link":
+							return await handleEditNewLinkRequest(knex, request, env);
+						default:
+							return createResponse("Invalid path.", 404);
+					}
+				case 'PUT':
+					switch (pathname) {
+						case "/card":
+							return await handleEditModifyRequest(knex, request, env);
+						default:
+							return createResponse("Invalid path.", 404);
+					}
+				case 'DELETE':
+					switch (pathname) {
+						case "/card":
+							return await handleEditDeleteCardRequest(knex, request, env);
+						case "/card/link":
+							return await handleEditDeleteLinkRequest(knex, request, env);
+						default:
+							return createResponse("Invalid path.", 404);
+					}
+				default:
+					return createResponse("Invalid method.", 405);
+			}
         } catch (error) {
             return createResponse("Internal server error.", 500);
         }
