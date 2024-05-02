@@ -7,13 +7,15 @@ const jsonData = JSON.parse(data);
 cardIds = [];
 linkIds = [];
 
-function generateRandomId(idsArray) {
-    let id;
-    do {
-        id = Math.floor(Math.random() * 10000);
-    } while (idsArray.includes(id));
-    idsArray.push(id);
-    return id;
+function generateSequentialId(idsArray) {
+	let id;
+	if (idsArray.length === 0) {
+		id = 1;
+	} else {
+		id = Math.max(...idsArray) + 1;
+	}
+	idsArray.push(id);
+	return id;
 }
 
 let sql = `
@@ -31,7 +33,7 @@ VALUES
 const generateCards = (data) => {
     return Object.entries(data).map(([collection, items]) => {
         return items.map(item => {
-            id = generateRandomId(cardIds);
+			id = generateSequentialId(cardIds);
             return `\t(${id}, "${collection}", "${item.Category}", "${item.Title}", "${item.Url}", "${item.Description}", "${item.Detail}")`;
         }).join(',\n');
     }).join(',\n');
@@ -58,7 +60,7 @@ const generateLinks = (data) => {
             count++;
             let links = item.links || [];
             return links.map(link => {
-                id = generateRandomId(linkIds);
+				id = generateSequentialId(linkIds);
                 cardId = cardIds[count];
                 return `\t(${id}, ${cardId}, '${link.Title}', '${link.Url}')`;
             }).filter(Boolean).join(',\n');

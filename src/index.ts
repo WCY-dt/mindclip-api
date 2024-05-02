@@ -34,7 +34,7 @@ export default {
         const { pathname, searchParams } = url;
 		const method = request.method;
 
-		console.log(`method: ${method} - Pathname: ${pathname}`);
+		// console.log(`method: ${method} - Pathname: ${pathname}`);
 
         try {
 			if (pathname === '/') {
