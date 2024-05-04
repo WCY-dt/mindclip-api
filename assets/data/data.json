@@ -1,5 +1,19 @@
 {
     "techniques": [
+		{
+			"Category": "CSS",
+			"Title": "Full-Bleed Layout Using CSS Grid",
+			"Url": "https://www.joshwcomeau.com/css/full-bleed/",
+			"Description": "CSS Grid实现全屏出血布局。",
+			"Detail": "Back in the day, there was a gold-standard website layout that everyone strived to create, but that was notoriously difficult to get right: the Holy Grail layout...."
+		},
+		{
+			"Category": "CSS",
+			"Title": "Hardest Problem in Computer Science: Centering Things",
+			"Url": "https://tonsky.me/blog/centering/",
+			"Description": "互联网大厂无法解决CSS居中问题大赏。",
+			"Detail": "This is my claim: we, as a civilization, forgot how to center things. I mean, we know how to do it. It has never been simpler (don’t ask why you need to remember four words instead of just horizontal/vertical, it’s still better than before)..."
+		},
         {
             "Category": "OS",
             "Title": "Linux内核教学",
