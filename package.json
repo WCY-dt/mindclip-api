@@ -1,6 +1,6 @@
 {
   "name": "mindclip-api",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "scripts": {
     "init": "node ./assets/scripts/initDatabase.js",
@@ -9,7 +9,6 @@
     "update-deploy": "npx wrangler d1 execute mindclip-db-alldata --remote --file=./assets/sql/schema.sql && wrangler deploy",
     "dev": "wrangler dev",
     "update-dev": "npx wrangler d1 execute mindclip-db-alldata --local --file=./assets/sql/schema.sql && wrangler dev",
-    "test": "vitest",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
