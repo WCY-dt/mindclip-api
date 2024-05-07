@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { handleVerifyRequest } from '../../services/verifyHandler';
 import createResponse from '../../utils/createResponse';
+import generateUniqueID from '../../utils/generateUniqueID';
 
 export async function handlePutCardRequest(knex: Knex, request: Request, env: Env) {
     if (!await handleVerifyRequest(request, env)) {
@@ -43,9 +44,19 @@ export async function handlePutCardRequest(knex: Knex, request: Request, env: En
 
     await Promise.all(data.links.map(async (link) => {
         const linkExists = await knex('Links').where('Id', link.Id).first();
-        if (!linkExists || linkExists.CardId !== link.CardId) {
+        if (linkExists && linkExists.CardId !== link.CardId) {
             return createResponse("Invalid post data.", 409);
         }
+
+		if (!linkExists) {
+			const linkId = await generateUniqueID(knex, 'Links');
+			await knex('Links').insert({
+				Id: linkId,
+				CardId: link.CardId,
+				Title: link.Title,
+				Url: link.Url,
+			});
+		}
 
         await knex('Links')
             .where('Id', link.Id)
