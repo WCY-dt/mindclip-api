@@ -27,17 +27,17 @@ export async function handlePostCardRequest(knex: Knex, request: Request, env: E
         Detail: data.Detail,
     });
 
-	// FIXME: 链接无法正常插入
+	let linkId = await generateUniqueID(knex, 'Links');
 
-    await Promise.all(data.links.map(async (link) => {
-		const linkId = await generateUniqueID(knex, 'Links');
-        await knex('Links').insert({
+	for (const link of data.links) {
+		await knex('Links').insert({
 			Id: linkId,
 			CardId: data.Id,
-            Title: link.Title,
-            Url: link.Url,
-        });
-    }));
+			Title: link.Title,
+			Url: link.Url,
+		});
+		linkId++;
+	}
 
     let result = {
         Id: data.Id,

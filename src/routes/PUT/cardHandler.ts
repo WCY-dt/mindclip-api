@@ -42,31 +42,31 @@ export async function handlePutCardRequest(knex: Knex, request: Request, env: En
         Detail: data.Detail,
     });
 
-    await Promise.all(data.links.map(async (link) => {
-        const linkExists = await knex('Links').where('Id', link.Id).first();
-        if (linkExists && linkExists.CardId !== link.CardId) {
-            return createResponse("Invalid post data.", 409);
-        }
+    for (const link of data.links) {
+		const linkExists = await knex('Links').where('Id', link.Id).first();
+		if (linkExists && linkExists.CardId !== link.CardId) {
+			return createResponse("Invalid post data.", 409);
+		}
 
 		if (!linkExists) {
 			const linkId = await generateUniqueID(knex, 'Links');
 			await knex('Links').insert({
 				Id: linkId,
+				CardId: data.Id,
+				Title: link.Title,
+				Url: link.Url,
+			});
+		} else {
+			await knex('Links')
+				.where('Id', link.Id)
+				.update({
+				Id: link.Id,
 				CardId: link.CardId,
 				Title: link.Title,
 				Url: link.Url,
 			});
 		}
-
-        await knex('Links')
-            .where('Id', link.Id)
-            .update({
-            Id: link.Id,
-            CardId: link.CardId,
-            Title: link.Title,
-            Url: link.Url,
-        });
-    }));
+	}
 
     return createResponse({ success: true }, 200);
 }
